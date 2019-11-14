@@ -166,27 +166,28 @@ var WithdrawManager = /** @class */ (function (_super) {
             var payload, burnReceipt, withdrawEvent, tokenId, mintEvents, mintTxHash, mint, _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0:
-                        payload = this._buildPayloadForExit(burnTxHash);
-                        return [4 /*yield*/, this.web3Client.getMaticWeb3().eth.getTransactionReceipt(burnTxHash)];
+                    case 0: return [4 /*yield*/, this._buildPayloadForExit(burnTxHash)];
                     case 1:
+                        payload = _c.sent();
+                        return [4 /*yield*/, this.web3Client.getMaticWeb3().eth.getTransactionReceipt(burnTxHash)];
+                    case 2:
                         burnReceipt = _c.sent();
                         withdrawEvent = burnReceipt.logs.find(function (l) { return l.topics[0].toLowerCase() === WithdrawManager.WITHDRAW_EVENT_SIG; });
                         tokenId = withdrawEvent.data;
                         return [4 /*yield*/, this.getERC721TokenContract(burnReceipt.to)
                                 .getPastEvents('Transfer', { filter: { tokenId: tokenId }, fromBlock: 0, toBlock: 'latest' })];
-                    case 2:
+                    case 3:
                         mintEvents = _c.sent();
                         mintTxHash = mintEvents
                             .find(function (event) { return event.raw.topics[3] === tokenId; })
                             .transactionHash;
                         console.log('mintTxHash', mintTxHash);
                         return [4 /*yield*/, this.web3Client.getMaticWeb3().eth.getTransaction(mintTxHash)];
-                    case 3:
+                    case 4:
                         mint = _c.sent();
                         _b = (_a = ethereumjs_util_1.default).bufferToHex;
                         return [4 /*yield*/, proofs_js_1.default.getTxBytes(mint)];
-                    case 4:
+                    case 5:
                         mint = _b.apply(_a, [_c.sent()]);
                         return [2 /*return*/, { payload: payload, mint: mint }];
                 }
